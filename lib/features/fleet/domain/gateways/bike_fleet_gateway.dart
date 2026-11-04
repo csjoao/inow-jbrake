@@ -21,7 +21,7 @@ class FleetBikeDetails {
 /// Acesso às bicicletas usado pela operação em lote. Uma bike por vez.
 ///
 /// Implementações: [BleBikeFleetGateway] (Bluetooth real) e
-/// [MockBikeFleetGateway] (simulada, para testes).
+/// [MockBikeFleetGateway] (simulada: "Modo simulação" e testes).
 abstract interface class BikeFleetGateway {
   /// Inicia a busca. Emite a lista completa a cada bike nova e só termina
   /// com [stopDiscovery]. Status sempre [FleetBikeStatus.disconnected].

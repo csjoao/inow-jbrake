@@ -5,12 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:inow_jbrake/core/constants/app_constants.dart';
-import 'package:inow_jbrake/features/app_settings/data/datasources/app_settings_local_datasource.dart';
 import 'package:inow_jbrake/features/app_settings/domain/entities/app_settings.dart';
 import 'package:inow_jbrake/features/app_settings/presentation/providers/app_settings_providers.dart';
-import 'package:inow_jbrake/features/bike/data/datasources/bike_local_datasource.dart';
 import 'package:inow_jbrake/features/bike/presentation/providers/bike_providers.dart';
-import 'package:inow_jbrake/features/fleet/data/datasources/fleet_blocklist_local_datasource.dart';
 import 'package:inow_jbrake/features/fleet/data/gateways/ble_bike_fleet_gateway.dart';
 import 'package:inow_jbrake/features/fleet/data/gateways/mock_bike_fleet_gateway.dart';
 import 'package:inow_jbrake/features/fleet/domain/entities/fleet_bike.dart';
@@ -18,34 +15,7 @@ import 'package:inow_jbrake/features/fleet/domain/gateways/bike_fleet_gateway.da
 import 'package:inow_jbrake/features/fleet/presentation/providers/fleet_blocklist_providers.dart';
 import 'package:inow_jbrake/features/fleet/presentation/providers/fleet_providers.dart';
 
-class _MemorySettings extends AppSettingsLocalDataSource {
-  _MemorySettings(this.value);
-  AppSettings value;
-
-  @override
-  AppSettings load() => value;
-
-  @override
-  Future<void> save(AppSettings s) async => value = s;
-}
-
-class _MemoryBlocklist extends FleetBlocklistLocalDataSource {
-  final saved = <String, String>{};
-
-  @override
-  Map<String, String> load() => {...saved};
-
-  @override
-  Future<void> add(String id, String name) async => saved[id] = name;
-
-  @override
-  Future<void> remove(String id) async => saved.remove(id);
-}
-
-class _NoBikeLocal extends BikeLocalDataSource {
-  @override
-  ({String id, String name})? get lastBike => null;
-}
+import 'helpers/fakes.dart';
 
 class _FakeGateway implements BikeFleetGateway {
   _FakeGateway(this.bikes);
@@ -132,14 +102,14 @@ Future<(ProviderContainer, _FakeGateway)> _setup({
   Map<String, String> blocked = const {},
 }) async {
   final gw = _FakeGateway(bikes);
-  final blocklist = _MemoryBlocklist()..saved.addAll(blocked);
+  final blocklist = MemoryBlocklist()..saved.addAll(blocked);
   final container = ProviderContainer(
     overrides: [
       fleetBlocklistLocalProvider.overrideWithValue(blocklist),
       bikeFleetGatewayProvider.overrideWithValue(gw),
       fleetScanQuietPeriodProvider.overrideWithValue(_quiet),
-      appSettingsLocalProvider.overrideWithValue(_MemorySettings(settings)),
-      bikeLocalProvider.overrideWithValue(_NoBikeLocal()),
+      appSettingsLocalProvider.overrideWithValue(MemorySettings(settings)),
+      bikeLocalProvider.overrideWithValue(NoBikeLocal()),
     ],
   );
   addTearDown(container.dispose);
@@ -527,7 +497,7 @@ void main() {
   });
 
   test('modo simulação troca a fonte das bicicletas', () async {
-    final settings = _MemorySettings(const AppSettings());
+    final settings = MemorySettings(const AppSettings());
     final c = ProviderContainer(
       overrides: [appSettingsLocalProvider.overrideWithValue(settings)],
     );

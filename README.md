@@ -49,7 +49,7 @@ lib/
   features/fleet/      aba "Bicicletas": operação em lote (marcha mínima)
     domain/gateways/   BikeFleetGateway (contrato)
     data/gateways/     BleBikeFleetGateway (Bluetooth real) e
-                       MockBikeFleetGateway (simulado, usado nos testes)
+                       MockBikeFleetGateway (Modo simulação e testes)
   features/app_settings/  Configurações do app (Hive, caixa `app_settings`)
 ```
 

@@ -3,13 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inow_jbrake/app.dart';
 import 'package:inow_jbrake/core/services/screen_awake.dart';
-import 'package:inow_jbrake/features/app_settings/data/datasources/app_settings_local_datasource.dart';
-import 'package:inow_jbrake/features/app_settings/domain/entities/app_settings.dart';
 import 'package:inow_jbrake/features/app_settings/presentation/providers/app_settings_providers.dart';
 import 'package:inow_jbrake/features/app_settings/presentation/screens/app_settings_screen.dart';
-import 'package:inow_jbrake/features/bike/data/datasources/bike_local_datasource.dart';
 import 'package:inow_jbrake/features/bike/presentation/providers/bike_providers.dart';
-import 'package:inow_jbrake/features/fleet/data/datasources/fleet_blocklist_local_datasource.dart';
 import 'package:inow_jbrake/features/fleet/data/gateways/mock_bike_fleet_gateway.dart';
 import 'package:inow_jbrake/features/fleet/domain/entities/fleet_bike.dart';
 import 'package:inow_jbrake/features/fleet/presentation/providers/fleet_blocklist_providers.dart';
@@ -17,51 +13,18 @@ import 'package:inow_jbrake/features/fleet/presentation/providers/fleet_provider
 import 'package:inow_jbrake/features/fleet/presentation/screens/fleet_screen.dart';
 import 'package:inow_jbrake/features/fleet/presentation/widgets/fleet_bike_card.dart';
 
-class _NoBikeLocal extends BikeLocalDataSource {
-  @override
-  ({String id, String name})? get lastBike => null;
-}
-
-class _MemoryBlocklist extends FleetBlocklistLocalDataSource {
-  final saved = <String, String>{};
-
-  @override
-  Map<String, String> load() => {...saved};
-
-  @override
-  Future<void> add(String id, String name) async => saved[id] = name;
-
-  @override
-  Future<void> remove(String id) async => saved.remove(id);
-}
-
-class _FakeScreen implements ScreenAwake {
-  final calls = <bool>[];
-
-  @override
-  Future<void> set({required bool on}) async => calls.add(on);
-}
-
-class _MemorySettings extends AppSettingsLocalDataSource {
-  AppSettings value = const AppSettings();
-
-  @override
-  AppSettings load() => value;
-
-  @override
-  Future<void> save(AppSettings s) async => value = s;
-}
+import 'helpers/fakes.dart';
 
 void main() {
   testWidgets('aba Bicicletas: lista, operação e configurações', (t) async {
-    final screen = _FakeScreen();
+    final screen = FakeScreenAwake();
     await t.pumpWidget(
       ProviderScope(
         overrides: [
-          bikeLocalProvider.overrideWithValue(_NoBikeLocal()),
+          bikeLocalProvider.overrideWithValue(NoBikeLocal()),
           screenAwakeProvider.overrideWithValue(screen),
-          fleetBlocklistLocalProvider.overrideWithValue(_MemoryBlocklist()),
-          appSettingsLocalProvider.overrideWithValue(_MemorySettings()),
+          fleetBlocklistLocalProvider.overrideWithValue(MemoryBlocklist()),
+          appSettingsLocalProvider.overrideWithValue(MemorySettings()),
           fleetScanQuietPeriodProvider.overrideWithValue(
             const Duration(milliseconds: 20),
           ),
@@ -177,10 +140,10 @@ void main() {
     await t.pumpWidget(
       ProviderScope(
         overrides: [
-          bikeLocalProvider.overrideWithValue(_NoBikeLocal()),
-          screenAwakeProvider.overrideWithValue(_FakeScreen()),
-          fleetBlocklistLocalProvider.overrideWithValue(_MemoryBlocklist()),
-          appSettingsLocalProvider.overrideWithValue(_MemorySettings()),
+          bikeLocalProvider.overrideWithValue(NoBikeLocal()),
+          screenAwakeProvider.overrideWithValue(FakeScreenAwake()),
+          fleetBlocklistLocalProvider.overrideWithValue(MemoryBlocklist()),
+          appSettingsLocalProvider.overrideWithValue(MemorySettings()),
           fleetScanQuietPeriodProvider.overrideWithValue(
             const Duration(milliseconds: 20),
           ),

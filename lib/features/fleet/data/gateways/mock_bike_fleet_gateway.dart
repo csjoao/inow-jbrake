@@ -8,15 +8,13 @@ import '../../domain/gateways/bike_fleet_gateway.dart';
 /// a tela sem bikes por perto.
 class MockBikeFleetGateway implements BikeFleetGateway {
   MockBikeFleetGateway({
-    Random? random,
     this.stepDelay = const Duration(milliseconds: 700),
     this.failureRate = 0.15,
     List<FleetBike>? fleet,
     this.growFleet = true,
-  }) : _random = random ?? Random(),
-       _fleet = [...(fleet ?? _defaultFleet)];
+  }) : _fleet = [...(fleet ?? _defaultFleet)];
 
-  final Random _random;
+  final _random = Random();
   final Duration stepDelay;
 
   /// Chance de falha em cada etapa (0 a 1).

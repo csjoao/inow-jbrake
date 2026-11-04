@@ -320,7 +320,6 @@ class _OperationCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(appSettingsProvider);
     final s = state;
-    // Sem bikes na lista, "Iniciar" busca primeiro.
     final canStart = !s.isRunning;
     const green = Color(0xFF2E7D32);
 

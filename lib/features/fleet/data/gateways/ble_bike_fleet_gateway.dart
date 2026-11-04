@@ -6,6 +6,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../../bike/data/datasources/bike_ble_datasource.dart';
 import '../../../bike/data/protocol/auth_handshake.dart';
 import '../../../bike/data/protocol/inow_commands.dart';
+import '../../../bike/data/protocol/inow_text.dart';
 import '../../../bike/data/protocol/telemetry_parser.dart';
 import '../../../bike/domain/entities/bike_state.dart';
 import '../../domain/entities/fleet_bike.dart';
@@ -294,7 +295,7 @@ class _Session {
   void _onBytes(List<int> bytes) {
     // Telemetria binária é ignorada aqui (mesma checagem do BikeController).
     if (parseTelemetry(bytes) != null) return;
-    final text = _asText(bytes);
+    final text = asInowText(bytes);
     if (text == null) return;
     _log?.call(LogLine(false, text));
     final raw = text.trim();
@@ -317,14 +318,5 @@ class _Session {
     try {
       await link.close();
     } catch (_) {}
-  }
-
-  static String? _asText(List<int> b) {
-    if (b.isEmpty) return null;
-    for (final x in b) {
-      final printable = (x >= 0x20 && x < 0x7F) || x == 0x0D || x == 0x0A;
-      if (!printable) return null;
-    }
-    return ascii.decode(b);
   }
 }

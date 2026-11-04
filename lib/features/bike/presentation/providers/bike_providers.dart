@@ -7,6 +7,7 @@ import '../../data/datasources/bike_ble_datasource.dart';
 import '../../data/datasources/bike_local_datasource.dart';
 import '../../data/protocol/auth_handshake.dart';
 import '../../data/protocol/inow_commands.dart';
+import '../../data/protocol/inow_text.dart';
 import '../../data/protocol/telemetry_parser.dart';
 import '../../domain/entities/bike_state.dart';
 
@@ -143,7 +144,7 @@ class BikeController extends Notifier<BikeState> {
   void _onBytes(List<int> bytes) {
     // Binário primeiro: alguns pacotes (":" ... CR LF) podem parecer texto.
     final t = parseTelemetry(bytes);
-    final text = t == null ? _asText(bytes) : null;
+    final text = t == null ? asInowText(bytes) : null;
     ref.read(bikeLogProvider.notifier).add(LogLine(false, text ?? _hex(bytes)));
 
     if (text != null) {
@@ -368,15 +369,6 @@ class BikeController extends Notifier<BikeState> {
         await link.close();
       } catch (_) {}
     }
-  }
-
-  static String? _asText(List<int> b) {
-    if (b.isEmpty) return null;
-    for (final x in b) {
-      final printable = (x >= 0x20 && x < 0x7F) || x == 0x0D || x == 0x0A;
-      if (!printable) return null;
-    }
-    return ascii.decode(b);
   }
 
   static String _hex(List<int> b) => b

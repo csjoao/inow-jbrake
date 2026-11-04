@@ -28,8 +28,6 @@ class FleetBikeCard extends StatelessWidget {
     BikeFeature.gear => Icons.speed,
     BikeFeature.lock => Icons.lock_outline,
     BikeFeature.headlight => Icons.flashlight_on_outlined,
-    BikeFeature.nfc => Icons.nfc,
-    BikeFeature.cruise => Icons.av_timer,
   };
 
   @override

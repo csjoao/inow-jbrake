@@ -9,13 +9,12 @@ enum FleetBikeStatus {
   final String label;
 }
 
-/// Funcionalidades que a bike anuncia (vêm do modelo / `GETDEVID`).
+/// Funcionalidades detectadas depois de conectar, pelas respostas a
+/// `+MDMX`/`+MODE`, `+LOCK` e `HLGT`.
 enum BikeFeature {
   gear('Marcha'),
   lock('Trava'),
-  headlight('Farol'),
-  nfc('NFC'),
-  cruise('Cruise');
+  headlight('Farol');
 
   const BikeFeature(this.label);
   final String label;

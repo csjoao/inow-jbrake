@@ -1,5 +1,5 @@
 name: inow_jbrake
-description: "A new Flutter project."
+description: "App local para bikes elétricas INOW via Bluetooth (painel e operação em lote)."
 publish_to: 'none'
 version: 0.1.0+1
 
