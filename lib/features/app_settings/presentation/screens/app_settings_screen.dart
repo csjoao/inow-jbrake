@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/services/success_sound.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../bike/presentation/widgets/section.dart';
 import '../../../fleet/presentation/providers/fleet_blocklist_providers.dart';
@@ -101,6 +102,23 @@ class AppSettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          const SectionTitle('Som ao concluir'),
+          SettingCard(
+            title: 'Tocar som',
+            subtitle: 'A cada bicicleta concluída na operação',
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(s.soundOnSuccess ? 'Ligado' : 'Desligado'),
+                ),
+                Switch(
+                  value: s.soundOnSuccess,
+                  onChanged: (v) => c.update(s.copyWith(soundOnSuccess: v)),
+                ),
+              ],
+            ),
+          ),
+          if (s.soundOnSuccess) _SoundPicker(selected: s.successSound),
           const SectionTitle('Bicicletas bloqueadas'),
           const _BlocklistCard(),
           const SectionTitle('Desenvolvimento'),
@@ -171,6 +189,47 @@ class _BlocklistCard extends ConsumerWidget {
                     ),
                 ],
               ),
+      ),
+    );
+  }
+}
+
+/// Escolha do som; tocar um chip seleciona e já dá uma prévia.
+class _SoundPicker extends ConsumerWidget {
+  const _SoundPicker({required this.selected});
+
+  final String selected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SettingCard(
+      title: 'Som',
+      subtitle: 'Toque para ouvir e escolher',
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final o in SuccessSoundOption.values)
+            ChoiceChip(
+              label: Text(o.label),
+              selected: selected == o.key,
+              selectedColor: AppColors.yellow,
+              avatar: Icon(
+                selected == o.key ? Icons.volume_up : Icons.play_arrow,
+                size: 18,
+              ),
+              onSelected: (_) {
+                ref
+                    .read(appSettingsProvider.notifier)
+                    .update(
+                      ref
+                          .read(appSettingsProvider)
+                          .copyWith(successSound: o.key),
+                    );
+                ref.read(successSoundProvider).play(o.key);
+              },
+            ),
+        ],
       ),
     );
   }

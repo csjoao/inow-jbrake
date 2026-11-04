@@ -402,37 +402,32 @@ class _OperationCard extends ConsumerWidget {
               Text(s.summary!, style: const TextStyle(fontSize: 13)),
             ],
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.icon(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.yellow,
-                      foregroundColor: AppColors.text,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    onPressed: canStart ? onStart : null,
-                    icon: const Icon(Icons.play_arrow),
-                    label: const Text('Iniciar operação'),
-                  ),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.yellow,
+                  foregroundColor: AppColors.text,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.text,
-                      side: const BorderSide(color: AppColors.yellow, width: 2),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    onPressed: canStart ? onStartContinuous : null,
-                    icon: const Icon(Icons.all_inclusive),
-                    label: const Text(
-                      'Iniciar operação contínua',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                onPressed: canStart ? onStart : null,
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Iniciar operação'),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.text,
+                  side: const BorderSide(color: AppColors.yellow, width: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-              ],
+                onPressed: canStart ? onStartContinuous : null,
+                icon: const Icon(Icons.all_inclusive),
+                label: const Text('Iniciar operação contínua'),
+              ),
             ),
             const SizedBox(height: 12),
             _KeepScreenOnSwitch(running: s.isRunning),

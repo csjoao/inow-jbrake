@@ -13,6 +13,7 @@ import 'package:inow_jbrake/features/fleet/data/gateways/mock_bike_fleet_gateway
 import 'package:inow_jbrake/features/fleet/domain/entities/fleet_bike.dart';
 import 'package:inow_jbrake/features/fleet/domain/gateways/bike_fleet_gateway.dart';
 import 'package:inow_jbrake/features/fleet/presentation/providers/fleet_blocklist_providers.dart';
+import 'package:inow_jbrake/core/services/success_sound.dart';
 import 'package:inow_jbrake/features/fleet/presentation/providers/fleet_providers.dart';
 
 import 'helpers/fakes.dart';
@@ -110,6 +111,7 @@ Future<(ProviderContainer, _FakeGateway)> _setup({
       fleetScanQuietPeriodProvider.overrideWithValue(_quiet),
       appSettingsLocalProvider.overrideWithValue(MemorySettings(settings)),
       bikeLocalProvider.overrideWithValue(NoBikeLocal()),
+      successSoundProvider.overrideWithValue(FakeSuccessSound()),
     ],
   );
   addTearDown(container.dispose);
@@ -332,6 +334,37 @@ void main() {
     }
   });
 
+  group('som ao concluir', () {
+    test('toca o som escolhido a cada bike concluída', () async {
+      final (c, gw) = await _setup(
+        settings: const AppSettings(
+          retries: 0,
+          scanSeconds: 1,
+          successSound: 'marimba',
+        ),
+      );
+      gw.failAt['B'] = 'auth';
+      await c.read(fleetControllerProvider.notifier).start();
+
+      final sound = c.read(successSoundProvider) as FakeSuccessSound;
+      // A e C concluem (B falha) -> dois toques, com a chave configurada.
+      expect(sound.played, ['marimba', 'marimba']);
+    });
+
+    test('desligado não toca', () async {
+      final (c, _) = await _setup(
+        settings: const AppSettings(
+          retries: 0,
+          scanSeconds: 1,
+          soundOnSuccess: false,
+        ),
+      );
+      await c.read(fleetControllerProvider.notifier).start();
+      final sound = c.read(successSoundProvider) as FakeSuccessSound;
+      expect(sound.played, isEmpty);
+    });
+  });
+
   group('lista de bloqueio', () {
     test('bike bloqueada aparece na lista mas é pulada', () async {
       final (c, gw) = await _setup(blocked: {'B': 'Bike B'});
@@ -521,6 +554,8 @@ void main() {
         'lockBikes': 'sim',
         'useMock': 1,
         'keepScreenOn': true,
+        'soundOnSuccess': 'nao',
+        'successSound': 'inexistente',
       });
       expect(s.defaultPassword, AppConstants.defaultPassword);
       expect(s.targetGear, 0);
@@ -530,6 +565,12 @@ void main() {
       expect(s.lockBikes, isTrue);
       expect(s.useMock, isFalse);
       expect(s.keepScreenOn, isTrue);
+      expect(s.soundOnSuccess, isTrue);
+      expect(s.successSound, 'sino');
+      expect(
+        AppSettings.fromMap({'successSound': 'game'}).successSound,
+        'game',
+      );
       expect(AppSettings.fromMap({'lockBikes': false}).lockBikes, isFalse);
     });
 

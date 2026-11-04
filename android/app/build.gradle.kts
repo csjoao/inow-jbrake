@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "com.csjoao.inow_jbrake"
-    compileSdk = flutter.compileSdkVersion
+    // permission_handler_android exige compileSdk 37 (o Flutter ainda usa 36).
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

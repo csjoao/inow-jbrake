@@ -1,4 +1,5 @@
 import 'package:inow_jbrake/core/services/screen_awake.dart';
+import 'package:inow_jbrake/core/services/success_sound.dart';
 import 'package:inow_jbrake/features/app_settings/data/datasources/app_settings_local_datasource.dart';
 import 'package:inow_jbrake/features/app_settings/domain/entities/app_settings.dart';
 import 'package:inow_jbrake/features/bike/data/datasources/bike_local_datasource.dart';
@@ -42,4 +43,12 @@ class FakeScreenAwake implements ScreenAwake {
 
   @override
   Future<void> set({required bool on}) async => calls.add(on);
+}
+
+/// Registra as chaves de som pedidas, sem tocar nada.
+class FakeSuccessSound implements SuccessSound {
+  final played = <String>[];
+
+  @override
+  Future<void> play(String key) async => played.add(key);
 }

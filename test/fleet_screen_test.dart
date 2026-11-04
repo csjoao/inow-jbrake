@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inow_jbrake/app.dart';
 import 'package:inow_jbrake/core/services/screen_awake.dart';
+import 'package:inow_jbrake/core/services/success_sound.dart';
 import 'package:inow_jbrake/features/app_settings/presentation/providers/app_settings_providers.dart';
 import 'package:inow_jbrake/features/app_settings/presentation/screens/app_settings_screen.dart';
 import 'package:inow_jbrake/features/bike/presentation/providers/bike_providers.dart';
@@ -23,6 +24,7 @@ void main() {
         overrides: [
           bikeLocalProvider.overrideWithValue(NoBikeLocal()),
           screenAwakeProvider.overrideWithValue(screen),
+          successSoundProvider.overrideWithValue(FakeSuccessSound()),
           fleetBlocklistLocalProvider.overrideWithValue(MemoryBlocklist()),
           appSettingsLocalProvider.overrideWithValue(MemorySettings()),
           fleetScanQuietPeriodProvider.overrideWithValue(
@@ -142,6 +144,7 @@ void main() {
         overrides: [
           bikeLocalProvider.overrideWithValue(NoBikeLocal()),
           screenAwakeProvider.overrideWithValue(FakeScreenAwake()),
+          successSoundProvider.overrideWithValue(FakeSuccessSound()),
           fleetBlocklistLocalProvider.overrideWithValue(MemoryBlocklist()),
           appSettingsLocalProvider.overrideWithValue(MemorySettings()),
           fleetScanQuietPeriodProvider.overrideWithValue(

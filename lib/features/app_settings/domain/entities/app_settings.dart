@@ -1,4 +1,5 @@
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/services/success_sound.dart';
 
 /// Parâmetros da aplicação usados pela operação em lote das bicicletas.
 class AppSettings {
@@ -11,6 +12,8 @@ class AppSettings {
     this.lockBikes = true,
     this.useMock = false,
     this.keepScreenOn = false,
+    this.soundOnSuccess = true,
+    this.successSound = 'sino',
   });
 
   /// Senha Bluetooth (6 dígitos) tentada em cada bike.
@@ -37,6 +40,12 @@ class AppSettings {
   /// Não deixar a tela apagar enquanto a operação roda.
   final bool keepScreenOn;
 
+  /// Tocar um som a cada bicicleta concluída.
+  final bool soundOnSuccess;
+
+  /// Som usado ([SuccessSoundOption.key]).
+  final String successSound;
+
   static const gearRange = (min: 0, max: 5);
   static const timeoutRange = (min: 5, max: 30);
   static const retriesRange = (min: 0, max: 3);
@@ -53,6 +62,8 @@ class AppSettings {
     bool? lockBikes,
     bool? useMock,
     bool? keepScreenOn,
+    bool? soundOnSuccess,
+    String? successSound,
   }) {
     return AppSettings(
       defaultPassword: defaultPassword ?? this.defaultPassword,
@@ -63,6 +74,8 @@ class AppSettings {
       lockBikes: lockBikes ?? this.lockBikes,
       useMock: useMock ?? this.useMock,
       keepScreenOn: keepScreenOn ?? this.keepScreenOn,
+      soundOnSuccess: soundOnSuccess ?? this.soundOnSuccess,
+      successSound: successSound ?? this.successSound,
     );
   }
 
@@ -75,6 +88,8 @@ class AppSettings {
     'lockBikes': lockBikes,
     'useMock': useMock,
     'keepScreenOn': keepScreenOn,
+    'soundOnSuccess': soundOnSuccess,
+    'successSound': successSound,
   };
 
   /// Lê o que estiver salvo; valores ausentes ou inválidos voltam ao padrão.
@@ -84,6 +99,8 @@ class AppSettings {
     final lock = m['lockBikes'];
     final mock = m['useMock'];
     final awake = m['keepScreenOn'];
+    final sound = m['soundOnSuccess'];
+    final soundKey = m['successSound'];
     int read(String key, int fallback, ({int min, int max}) range) {
       final v = m[key];
       return v is int && v >= range.min && v <= range.max ? v : fallback;
@@ -100,6 +117,10 @@ class AppSettings {
       lockBikes: lock is bool ? lock : d.lockBikes,
       useMock: mock is bool ? mock : d.useMock,
       keepScreenOn: awake is bool ? awake : d.keepScreenOn,
+      soundOnSuccess: sound is bool ? sound : d.soundOnSuccess,
+      successSound: soundKey is String && SuccessSoundOption.isValid(soundKey)
+          ? soundKey
+          : d.successSound,
     );
   }
 }

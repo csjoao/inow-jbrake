@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app_settings/domain/entities/app_settings.dart';
 import '../../../app_settings/presentation/providers/app_settings_providers.dart';
 import '../../../bike/domain/entities/bike_state.dart';
+import '../../../../core/services/success_sound.dart';
 import '../../../bike/presentation/providers/bike_providers.dart';
 import '../../data/gateways/ble_bike_fleet_gateway.dart';
 import '../../data/gateways/mock_bike_fleet_gateway.dart';
@@ -575,6 +576,9 @@ class FleetController extends Notifier<FleetState> {
           }
           await disconnect();
           final gear = 'Marcha ajustada para ${s.targetGear}';
+          if (s.soundOnSuccess) {
+            unawaited(ref.read(successSoundProvider).play(s.successSound));
+          }
           _setBike(
             id,
             FleetBikeStatus.completed,

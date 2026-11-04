@@ -15,6 +15,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:inow_jbrake/app.dart';
 import 'package:inow_jbrake/core/services/screen_awake.dart';
+import 'package:inow_jbrake/core/services/success_sound.dart';
 import 'package:inow_jbrake/features/app_settings/data/datasources/app_settings_local_datasource.dart';
 import 'package:inow_jbrake/features/app_settings/domain/entities/app_settings.dart';
 import 'package:inow_jbrake/features/app_settings/presentation/providers/app_settings_providers.dart';
@@ -58,6 +59,11 @@ class _SavedBike extends BikeLocalDataSource {
 class _NoScreen implements ScreenAwake {
   @override
   Future<void> set({required bool on}) async {}
+}
+
+class _NoSound implements SuccessSound {
+  @override
+  Future<void> play(String key) async {}
 }
 
 /// Resultado fixo, sem Bluetooth: tudo conclui, menos a 0104 (senha recusada).
@@ -132,6 +138,7 @@ void main() {
           fleetBlocklistLocalProvider.overrideWithValue(_Blocklist()),
           bikeLocalProvider.overrideWithValue(_SavedBike()),
           screenAwakeProvider.overrideWithValue(_NoScreen()),
+          successSoundProvider.overrideWithValue(_NoSound()),
           bikeFleetGatewayProvider.overrideWithValue(_DemoGateway()),
           fleetScanQuietPeriodProvider.overrideWithValue(
             const Duration(milliseconds: 300),
