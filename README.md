@@ -3,6 +3,26 @@
 Réplica do app INOW (bikes elétricas) em Flutter, para testes locais.
 Protocolo extraído do APK Android oficial (`com.qmwheelbike.inow` v1.1.3).
 
+## Telas
+
+Imagens com dados simulados (nenhum Bluetooth é usado).
+
+<p align="center">
+  <img src="docs/screenshots/03-veiculo.png" width="30%" alt="Aba Veículo" />
+  <img src="docs/screenshots/01-bicicletas.png" width="30%" alt="Aba Bicicletas: operação em lote" />
+  <img src="docs/screenshots/02-configuracoes.png" width="30%" alt="Configurações" />
+</p>
+
+As imagens são geradas pelo app rodando num simulador, com o cenário fixo de
+`integration_test/screenshots_test.dart`:
+
+```bash
+flutter drive \
+  --driver=test_driver/screenshots.dart \
+  --target=integration_test/screenshots_test.dart \
+  -d <simulador>
+```
+
 ## Rodar
 
 ```bash
